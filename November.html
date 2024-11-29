@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Happy+Monkey&display=swap" rel="stylesheet">
+    <title>WHO DID WHAT!</title>
+  <style>
+    /* General styles */
+body {
+    font-family: 'Happy Monkey', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #111; /* Fallback color */
+    color: #fff;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    position: relative; /* Ensures other elements like the map are placed correctly */
+    padding-top: 80px; /* Adjust this padding to be the height of the fixed header */
+}
+
+/* Background image settings */
+body::before {
+    content: "";
+    position: absolute; /* Position it absolute relative to body */
+    top: 0; /* Start at the very top of the body */
+    left: 0;
+    width: 100%; /* Full width of the screen */
+    height: 100%; /* Full height of the screen, it will stay in the background */
+    background-image: url('map.png'); /* Path to your India map image */
+    background-repeat: no-repeat;
+    background-size: cover; /* Ensures the map fills the screen */
+    background-position: center center; /* Centers the map both horizontally and vertically */
+    opacity: 0.1; /* Set transparency */
+    z-index: -1; /* Keeps it behind content */
+}
+
+/* Header */
+header {
+    background-color: #222222; /* Semi-transparent red */
+    color: #fff; /* White text */
+    display: flex; /* Flexbox to align items horizontally */
+    justify-content: space-between; /* Space between logo/text and menu */
+    align-items: center; /* Vertically center the items */
+    padding: 10px 20px; /* Adjust padding for spacing */
+    position: fixed; /* Makes the header float */
+    top: 0; /* Fixes it to the top of the page */
+    left: 0;
+    width: 100%; /* Full width */
+    z-index: 1000; /* Ensures it stays on top of other content */
+    border-bottom-left-radius: 20px;  /* Rounded bottom left corner */
+    border-bottom-right-radius: 20px;  /* Rounded bottom right corner */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Optional: adds a shadow for effect */
+    transition: all 0.5s ease; /* Smooth animation for transitions */
+    box-sizing: border-box; /* Ensures padding is included in the width */
+}
+
+/* Scrollable content */
+main {
+    padding-top: 80px; /* Ensure the main content starts below the fixed header */
+    z-index: 1;
+}
+
+/* Logo and text on the left */
+header .left-container {
+    display: flex;
+    align-items: center; /* Center vertically */
+}
+
+/* Logo styling */
+header .logo h1 {
+    margin: 0;
+    font-size: 24px; /* Adjust the font size as per your design */
+    color: #e74c3c; /* Optional: Change color of logo text */
+    font-weight: bold; /* Make the logo text bold */
+}
+
+/* Timeline button on the right side */
+.timeline-btn {
+    background-color: #404040; /* Green background for better contrast */
+    color: #FF8000; /* White text */
+    font-size: 16px;
+    padding: 8px 50px;
+    border: 4px solid #4CAF50; /* Green border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer;
+    transition: all 0.3s ease; /* Animation effect */
+    box-shadow: 0 5px 6px rgba(0, 0, 0, 0.1); /* Optional: soft shadow effect */
+}
+
+/* Animation effect for the button on hover */
+.timeline-btn:hover {
+    background-color: #E9EAEC; /* Darken the green slightly on hover */
+    border-color: #45a049; /* Darken border color on hover */
+    transform: translateY(-3px); /* Button moves up slightly */
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3); /* Shadow deepens */
+}
+
+/* Animation effect for the button when focused */
+.timeline-btn:focus {
+    outline: none; /* Remove default focus outline */
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.5); /* Add a glow effect around the button */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column; /* Stack logo and menu vertically on smaller screens */
+        text-align: center;
+    }
+
+    .timeline-btn {
+        margin-top: 10px; /* Space the button below logo on smaller screens */
+    }
+}
+
+    /* Adjust the body content to avoid overlap */
+    body {
+        padding-top: 80px; /* Adds space to the top for the fixed header */
+    }
+
+    /* Timeline container */
+    .timeline {
+        position: relative;
+        width: 90%;
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px 0;
+    }
+
+    /* Vertical line */
+    .timeline::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 60px;
+        width: 4px;
+        background: #e74c3c;
+        z-index: 0;
+    }
+
+    /* Timeline items */
+    .timeline-item {
+        position: relative;
+        width: 45%;
+        padding: 20px;
+        background: #222;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        z-index: 1;
+    }
+
+    .timeline-item.left {
+        left: 80px;
+    }
+
+    .timeline-item.right {
+        left: calc(60% + 20px);
+    }
+
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        top: 20px;
+        right: -12px;
+        height: 16px;
+        width: 16px;
+        background: #e74c3c;
+        border-radius: 50%;
+        border: 2px solid #111;
+    }
+
+    .timeline-item.right::before {
+        left: -12px;
+        right: auto;
+    }
+
+    .timeline-item h3 {
+        color: #e74c3c;
+        margin: 0 0 10px;
+        font-size: 18px;
+    }
+
+    .timeline-item p {
+        margin: 0;
+        color: #bbb;
+        font-size: 14px;
+    }
+
+    /* Month Break Separator */
+    .month-break {
+        position: relative;
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    .month-break span {
+        background: #111;
+        color: #e74c3c;
+        padding: 8px 20px;
+        font-size: 18px;
+        font-weight: bold;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .month-break::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: #e74c3c;
+        z-index: -1;
+    }
+
+    /* Add animation */
+    .timeline-item {
+        opacity: 0;
+        transform: translateY(50px);
+        transition: all 0.5s ease-in-out;
+    }
+
+    .timeline-item.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+footer {
+    background-color: #1a1a1a; /* Dark gray background */
+    color: #f5f5f5; /* Light gray text for contrast */
+    padding: 5px 5px; /* Increase padding to make footer taller */
+    text-align: center; /* Center the text */
+    position: relative; /* Keep it in the normal flow */
+    bottom: 0;
+    width: 100%;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3); /* Soft shadow for a floating effect */
+    display: flex;
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+    flex-direction: column; /* Stack items vertically */
+}
+
+footer a {
+    color: #ff4d4d; /* Red accent color for links */
+    text-decoration: none; /* Remove underline */
+    margin: 0 15px; /* Add spacing between links */
+}
+
+footer a:hover {
+    text-decoration: underline; /* Underline on hover */
+}
+
+footer p {
+    font-size: 18px; /* Slightly smaller font size for readability */
+}
+
+#date-time {
+    font-size: 14px; /* Font size for the date and time */
+    color: white; /* Text color */
+    margin-top: 10px; /* Add some space from other elements */
+}
+
+</style>
+
+</head>
+<body>
+    <header>
+        <h1>WHO DID WHAT?</h1>
+  <nav>
+        <button class="timeline-btn"><b>Timeline</b></button>
+    </nav>
+    </header>
+ <div class="timeline">
+
+       <div class="month-break"><span>November 2024</span></div>
+
+        <!-- November timeline items (30 days) -->
+        <div class="timeline-item left">
+            <h3>November 30, 2024</h3>
+            <p>User completed final testing of Grasscrete mix designs.</p>
+        </div>
+        <div class="timeline-item right">
+            <h3>November 29, 2024</h3>
+            <p>User finalized research for the medical and structural properties of Grasscrete.</p>
+        </div>
+        <div class="timeline-item left">
+            <h3>November 28, 2024</h3>
+            <p>User analyzed results of compressive strength testing.</p>
+        </div>
+        <div class="timeline-item right">
+            <h3>November 27, 2024</h3>
+            <p>User finalized mix design for pavement unit.</p>
+        </div>
+        <div class="timeline-item left">
+            <h3>November 26, 2024</h3>
+            <p>User conducted final compressive strength tests on Grasscrete samples.</p>
+        </div>
+        <div class="timeline-item right">
+            <h3>November 25, 2024</h3>
+            <p>User documented final observations from project review meeting.</p>
+        </div>
+        <div class="timeline-item left">
+            <h3>November 24, 2024</h3>
+            <p>User completed final project meeting with clients.</p>
+        </div>
+        <div class="timeline-item right">
+            <h3>November 23, 2024</h3>
+            <p>User tested the durability of Grasscrete under different weather conditions.</p>
+        </div>
+        <div class="timeline-item left">
+            <h3>November 22, 2024</h3>
+            <p>User prepared final report on testing of pavement units.</p>
+        </div>
+        <div class="timeline-item right">
+            <h3>November 21, 2024</h3>
+            <p>User conducted a peer review of the project's data.</p>
+        </div>
+        <div class="timeline-item left">
+            <h3>November 20, 2024</h3>
+            <p>User finalized the clinical testing phase of Grasscrete properties.</p>
+        </div>
+        <div class="timeline-item right">
+            <h3>November 19, 2024</h3>
+            <p>User researched carbon sequestration potential of Grasscrete materials.</p>
+        </div>
+        <div class="timeline-item left">
+            <h3>November 18, 2024</h3>
+            <p>User reviewed final drafts of reports for academic submission.</p>
+        </div>
+        <div class="timeline-item right">
+            <h3>November 17, 2024</h3>
+            <p>User conducted testing on the strength of grasscrete mixes.</p>
+        </div>
+        <div class="timeline-item left">
+            <h3>November 16, 2024</h3>
+            <p>User documented the results of field testing for concrete mixes.</p>
+        </div>
+        <div class="timeline-item right">
+            <h3>November 15, 2024</h3>
+            <p>User analyzed data on the performance of grasscrete in pavement applications.</p>
+        </div>
+        <div class="timeline-item left">
+            <h3>November 14, 2024</h3>
+            <p>User tested various mixes involving GGBS.</p>
+        </div>
+        <div class="timeline-item right">
+            <h3>November 13, 2024</h3>
+            <p>User conducted a study on the use of glass powder in concrete mixes.</p>
+        </div>
+        <div class="timeline-item left">
+            <h3>November 12, 2024</h3>
+            <p>User completed a review of testing apparatus for compressive strength.</p>
+        </div>
+        <div class="timeline-item right">
+            <h3>November 11, 2024</h3>
+            <p>User finalized research for the mix design of the final concrete batch.</p>
+        </div>
+        <div class="timeline-item left">
+            <h3>November 10, 2024</h3>
+            <p>User studied the effects of using limestone powder in concrete.</p>
+        </div>
+        <div class="timeline-item right">
+            <h3>November 9, 2024</h3>
+            <p>User researched the effect of superplasticizer on the concrete mixture.</p>
+        </div>
+        <div class="timeline-item left">
+            <h3>November 8, 2024</h3>
+            <p>User tested compressive strength of Grasscrete with different admixtures.</p>
+        </div>
+        <div class="timeline-item right">
+            <h3>November 7, 2024</h3>
+            <p>User began testing the effects of silica fume in concrete mixes.</p>
+        </div>
+        <div class="timeline-item left">
+            <h3>November 6, 2024</h3>
+            <p>User initiated a review of project scope and initial data collection.</p>
+        </div>
+        <div class="timeline-item right">
+            <h3>November 5, 2024</h3>
+            <p>User analyzed materials for their suitability in the Grasscrete pavement system.</p>
+        </div>
+        <div class="timeline-item left">
+            <h3>November 4, 2024</h3>
+            <p>User completed preliminary research on Grasscrete components.</p>
+        </div>
+        <div class="timeline-item right">
+            <h3>November 3, 2024</h3>
+            <p>User confirmed mix proportions for Grasscrete pavement.</p>
+        </div>
+        <div class="timeline-item left">
+            <h3>November 2, 2024</h3>
+            <p>User finalized research on carbonation levels in Grasscrete pavement.</p>
+        </div>
+        <div class="timeline-item right">
+            <h3>November 1, 2024</h3>
+            <p>User began development of the Grasscrete pavement system.</p>
+        </div>
+</div>
+
+   <footer>
+    <p><a href="about.html">About Us</a> | <a href="contact.html">Contact Us</a></p>
+    <p id="date-time"></p> <!-- Placeholder for current date and time -->
+</footer>
+
+
+    <script>
+        // Intersection Observer to add animation when timeline items are in view
+        const timelineItems = document.querySelectorAll('.timeline-item');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.2 });
+
+        timelineItems.forEach(item => observer.observe(item));
+
+    // Function to update date and time
+    function updateDateTime() {
+        const date = new Date();
+        const options = { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric', 
+            hour: 'numeric', 
+            minute: 'numeric', 
+            second: 'numeric', 
+            hour12: true
+        };
+        
+        // Format the current date and time
+       const dateTimeString = date.toLocaleDateString('en-GB', options);
+
+
+        // Update the content of the date-time paragraph
+        document.getElementById('date-time').textContent = dateTimeString;
+    }
+
+    // Update date and time every second
+    setInterval(updateDateTime, 1000);
+
+    // Initial update to show time right away
+    updateDateTime();
+
+    </script>
+</body>
+</html>
